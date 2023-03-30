@@ -46,12 +46,15 @@ int main() {
 		if (a == 0)
 			Union(b, c);
 		else {
+			//sameParent(int b, int c) -> 같은 공통조상을 가질 경우 최소 공통부모가 존재하므로 확인
+			//
 			b = Find(b);
 			c = Find(c);
 			if (b == c)
 				cout << "YES\n";
 			else
 				cout << "NO\n";
+			//
 		}
 	}
 	return 0;
