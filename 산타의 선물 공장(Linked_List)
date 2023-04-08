@@ -1,0 +1,190 @@
+#include <iostream>
+#include <unordered_map>
+using namespace std;
+struct Box {
+	int idx, weight, belt;
+	Box* prev, * next;
+	Box() {
+		idx = weight = belt = -1;
+		prev = next = nullptr;
+	}
+}box[100001];
+
+struct Belt {
+	bool isBroken;
+	Box* head, * tail;
+	Belt() {
+		isBroken = false;
+		head = new Box();
+		tail = new Box();
+		head->next = tail;
+		tail->prev = head;
+		head->prev = tail->next = nullptr;
+	}
+}belt[11];
+
+int q, n, m, cmd;
+unordered_map<int, Box*> boxMap;
+
+bool empty(int beltNum) {
+	return belt[beltNum].head->next == belt[beltNum].tail;
+}
+
+void push_back(int beltNum, Box* item) {
+	boxMap[item->idx] = item;
+	Box* prev = belt[beltNum].tail->prev;
+	Box* next = belt[beltNum].tail;
+
+	item->prev = prev;
+	item->next = next;
+	prev->next = item;
+	next->prev = item;
+}
+
+void pop_front(int beltNum) {
+	if (empty(beltNum)) return;
+	Box* item = belt[beltNum].head->next;
+	boxMap.erase(item->idx);
+	Box* prev = belt[beltNum].head;
+	Box* next = belt[beltNum].head->next->next;
+
+	prev->next = next;
+	next->prev = prev;
+	item->prev = item->next = nullptr;
+}
+
+void init() {
+	cin >> n >> m;
+	int id[100001], w[100001];
+	for (int i = 0; i < n; i++)
+		cin >> id[i];
+	for (int i = 0; i < n; i++)
+		cin >> w[i];
+	int cur = 0;
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n / m; j++) {
+			box[cur].idx = id[cur];
+			box[cur].weight = w[cur];
+			box[cur].belt = i;
+			push_back(i, &box[cur++]);
+		}
+
+	}
+}
+int getItem() {
+	int sum = 0;
+	int w_max;
+	cin >> w_max;
+	for (int i = 0; i < m; i++) {
+		if (empty(i) || belt[i].isBroken) continue;
+		Box* front = belt[i].head->next;
+		if (front->weight <= w_max) {
+			sum += front->weight;
+			pop_front(i);
+		}
+		else {
+			pop_front(i);
+			push_back(i, front);
+		}
+	}
+	return sum;
+}
+int deleteItem() {
+	int r_id;
+	cin >> r_id;
+	if (boxMap.find(r_id) == boxMap.end()) return -1;
+	Box* item = boxMap[r_id];
+	Box* prev = item->prev;
+	Box* next = item->next;
+
+	prev->next = next;
+	next->prev = prev;
+
+	item->prev = item->next = nullptr;
+
+	boxMap.erase(r_id);
+	return r_id;
+}
+int findItem() {
+	int f_id;
+	cin >> f_id;
+	if (boxMap.find(f_id) == boxMap.end()) return -1;
+	Box* item = boxMap[f_id];
+
+	Box* prev = item->prev;
+	Box* next = item->next;
+
+	Box* begin = belt[item->belt].head->next;
+	Box* end = belt[item->belt].tail->prev;
+
+	if (item != begin) {
+		item->prev = belt[item->belt].head;
+		belt[item->belt].head->next = item;
+
+		begin->prev = end;
+		end->next = begin;
+
+		prev->next = belt[item->belt].tail;
+		belt[item->belt].tail->prev = prev;
+	}
+	return item->belt + 1;
+}
+int breakBelt() {
+	int b_num;
+	cin >> b_num;
+	b_num--;
+	if (belt[b_num].isBroken) return -1;
+
+	belt[b_num].isBroken = true;
+	if (!empty(b_num)) {
+		int cur = (b_num) % m;
+		while (belt[cur].isBroken) cur = (cur + 1) % m;
+
+		Box* prev = belt[cur].tail->prev;
+		Box* begin = belt[b_num].head->next;
+		Box* end = belt[b_num].tail->prev;
+
+		for (auto iter = begin; iter != belt[b_num].tail; iter = iter->next) iter->belt = cur;
+
+		prev->next = begin;
+		begin->prev = prev;
+
+		end->next = belt[cur].tail;
+		belt[cur].tail->prev = end;
+
+		belt[b_num].head->next = belt[b_num].tail;
+		belt[b_num].tail->prev = belt[b_num].head;
+
+	}
+	return b_num + 1;
+}
+
+void solution() {
+	cin >> q;
+	while (q--) {
+		cin >> cmd;
+		switch (cmd) {
+		case 100:
+			init();
+			break;
+		case 200:
+			cout << getItem() << '\n';
+			break;
+		case 300:
+			cout << deleteItem() << '\n';
+			break;
+		case 400:
+			cout << findItem() << '\n';
+			break;
+		case 500:
+			cout << breakBelt() << '\n';
+		}
+	}
+}
+
+int main() {
+	cin.tie(0);
+	ios::sync_with_stdio(0);
+	solution();
+	return 0;
+}
