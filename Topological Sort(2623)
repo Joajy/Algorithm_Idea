@@ -1,0 +1,60 @@
+#include<iostream>
+#include<vector>
+#include<queue>
+using namespace std;
+
+int n, m;
+int indeg[1001];
+vector<int> v[1001], answer;
+
+void input() {
+	cin >> n >> m;
+	int after, before, cnt;
+	for (int i = 0; i < m; ++i) {
+		cin >> cnt;
+		if (cnt == 0) continue;
+		cin >> after;
+		before = after;
+		for (int j = 1; j < cnt; ++j) {
+			cin >> after;
+			v[before].push_back(after);
+			indeg[after]++;
+			before = after;
+		}
+	}
+}
+
+void topolSort() {
+	queue<int> q;
+	for (int i = 1; i <= n; ++i) {
+		if (indeg[i] == 0) q.push(i);
+	}
+	while (!q.empty()) {
+		int cur = q.front(); q.pop();
+		answer.push_back(cur);
+		for (auto nxt : v[cur]) {
+			if (--indeg[nxt] == 0) {
+				q.push(nxt);
+			}
+		}
+	}
+}
+
+void solution() {
+	input();
+	topolSort();
+	if (answer.size() != n) {
+		cout << 0 << '\n';
+		return;
+	}
+	for (int i = 0; i < n; i++) {
+		cout << answer[i] << '\n';
+	}
+}
+
+int main() {
+	cin.tie(0), cout.tie(0);
+	ios_base::sync_with_stdio(0);
+	solution();
+	return 0;
+}
