@@ -22,7 +22,7 @@ ll update(int st, int en, int node, int index, ll tmp) {
 	return tree[node] = update(st, mid, node << 1, index, tmp) + update(mid + 1, en, (node << 1) + 1, index, tmp);
 }
 
-//st, en : 시작 및 끝 인덱스 / left, right : 구간 합 구하고자 하는 범위
+//st, en : 시작 및 끝 인덱스 / left, right : 구간의 합 구하고자 하는 범위
 ll sum(int st, int en, int left, int right, int node) {
 	if (left > en || right < st) return 0;
 	if (left <= st && en <= right) return tree[node];
