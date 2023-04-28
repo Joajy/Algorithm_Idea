@@ -19,11 +19,11 @@ ll init(int node, int st, int en) {
 
 void lazyUpdate(int st, int en, int node) {
 	if (lazy[node] == 0) return;
-	segTree[node] += (en - st + 1) * lazy[node];
 	if (st != en) {
 		lazy[node << 1] += lazy[node];
 		lazy[(node << 1) + 1] += lazy[node];
 	}
+ segTree[node] += (en - st + 1) * lazy[node];
 	lazy[node] = 0;
 }
 
