@@ -23,7 +23,7 @@ void lazyUpdate(int st, int en, int node) {
 		lazy[node << 1] += lazy[node];
 		lazy[(node << 1) + 1] += lazy[node];
 	}
- segTree[node] += (en - st + 1) * lazy[node];
+         segTree[node] += (en - st + 1) * lazy[node];
 	lazy[node] = 0;
 }
 
