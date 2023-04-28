@@ -1,0 +1,65 @@
+
+#include<iostream>
+using namespace std;
+#define MAX 100'001
+#define ll long long
+
+int height[MAX], minSeg[MAX << 2];
+int n, m;
+
+int cmpIndex(int a, int b) {
+	if (a == -1) return b;
+	if (b == -1) return a;
+	if (height[a] < height[b]) return a;
+	return b;
+}
+
+int init(int st, int en, int node) {
+	if (st == en) return minSeg[node] = st;
+	int mid = (st + en) >> 1;
+	int a = init(st, mid, node << 1);
+	int b = init(mid + 1, en, (node << 1) + 1);
+	return minSeg[node] = cmpIndex(a, b);
+}
+
+int minIdx(int st, int en, int left, int right, int node) {
+	if (left > en || right < st) return -1;
+	if (left <= st && en <= right) return minSeg[node];
+	int mid = (st + en) >> 1;
+	int a = minIdx(st, mid, left, right, node << 1);
+	int b = minIdx(mid + 1, en, left, right, (node << 1) + 1);
+	return cmpIndex(a, b);
+}
+
+ll query(int st, int en) {
+	if (st == en) return height[st];
+	int node = minIdx(1, n, st, en, 1);
+	ll res = height[node] * (en - st + 1);
+	if (st < node) res = max(res, query(st, node - 1));
+	if (node < en) res = max(res, query(node + 1, en));
+	return res;
+}
+
+void input() {
+	cin >> n >> m;
+	for (int i = 1; i <= n; i++) {
+		cin >> height[i];
+	}
+}
+
+void solution() {
+	input();
+	init(1, n, 1);
+	int a, b;
+	for (int i = 0; i < m; i++) {
+		cin >> a >> b;
+		cout << query(a, b) << '\n';
+	}
+}
+
+int main() {
+	cin.tie(0), cout.tie(0);
+	ios_base::sync_with_stdio(0);
+	solution();
+	return 0;
+}
