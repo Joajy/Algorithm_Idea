@@ -6,10 +6,10 @@ using namespace std;
 ll arr[MAX], segTree[MAX << 2], lazy[MAX << 2];
 /*
 	Propagation Segment Tree
-	ÇÑ Äõ¸®¿¡¼­ ´Ù±¸°£ º¯°æÀÌ ÇÊ¿äÇÑ °æ¿ì¿¡ »ç¿ë
+	í•œ ì¿¼ë¦¬ì—ì„œ ë‹¤êµ¬ê°„ ë³€ê²½ì´ í•„ìš”í•œ ê²½ìš°ì— ì‚¬ìš©
 
-	b¹øÂ°ºÎÅÍ c¹øÂ°±îÁö °¢°¢ d¶ó´Â °ªÀ» ´õÇÏ¿© update
-	ÀÌ¿Í °°Àº °æ¿ì¿¡ lazy Update ¹æ¹ý »ç¿ë
+	bë²ˆì§¸ë¶€í„° cë²ˆì§¸ê¹Œì§€ ê°ê° dë¼ëŠ” ê°’ì„ ë”í•˜ì—¬ update
+	ì´ì™€ ê°™ì€ ê²½ìš°ì— lazy Update ë°©ë²• ì‚¬ìš©
 */
 ll init(int node, int st, int en) {
 	if (st == en) return segTree[node] = arr[st];
