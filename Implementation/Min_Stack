@@ -1,0 +1,44 @@
+class MinStack {
+
+    Stack<Integer> stack, minStack;
+ 
+    MinStack() {
+        stack = new Stack<>();
+        minStack = new Stack<>();
+    }
+    
+    //기본 스택에 값을 대입
+    //만약 최소값 스택이 비어있거나, 새 값이 최소값 스택의 최저값보다 작을 경우 대입
+    void push(int val) {
+        stack.add(val);
+        if(minStack.isEmpty() || val <= minStack.peek()) {
+            minStack.add(val);
+        }
+    }
+    
+    //기본 스택에서 하나를 제거
+    //만약 제거한 값이 최소값이었다면 minStack에서도 제거한다.
+    void pop() {
+        int value = stack.pop();
+        if(value == minStack.get(minStack.size() - 1)) {
+            minStack.pop();
+        }
+    }
+    
+    int top() {
+        return stack.peek();
+    }
+    
+    int getMin() {
+        return minStack.peek();
+    }
+};
+
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * MinStack* obj = new MinStack();
+ * obj->push(val);
+ * obj->pop();
+ * int param_3 = obj->top();
+ * int param_4 = obj->getMin();
+ */
